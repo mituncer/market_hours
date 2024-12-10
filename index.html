@@ -45,6 +45,11 @@
         #current-time-label {
             color: red;
             font-weight: bold;
+            top: 55px;
+        }
+
+        .current-time-container {
+            margin-top: 10px;
         }
     </style>
 </head>
@@ -56,20 +61,25 @@
     <p id="local-time">Loading your local time...</p>
     <p id="market-hours">Loading New York market hours...</p>
 
+    <div class="current-time-container">
+        <p id="current-time-label">Your Local Time: Loading...</p>
+    </div>
+
     <script>
         const timeBar = document.getElementById('time-bar');
         const localTimeDisplay = document.getElementById('local-time');
         const marketHoursDisplay = document.getElementById('market-hours');
+        const currentTimeLabel = document.getElementById('current-time-label');
 
         const totalHours = 24; // Total hours in a day
         const nyMarketStart = 9.5; // New York market starts at 9:30 AM
         const nyMarketEnd = 16; // New York market ends at 4:00 PM
 
-        // Helper function to format time
-        function formatTime(hours) {
+        // Helper function to format time in 24-hour format
+        function formatTime24hr(hours) {
             const date = new Date();
             date.setHours(Math.floor(hours), (hours % 1) * 60, 0, 0);
-            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: true });
+            return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
         }
 
         function updateTimeBar() {
@@ -96,7 +106,7 @@
 
             const marketOpenLabel = document.createElement('div');
             marketOpenLabel.className = 'label';
-            marketOpenLabel.innerText = `Open: ${formatTime(localMarketStart)}`;
+            marketOpenLabel.innerText = `Open: ${formatTime24hr(localMarketStart)}`;
             marketOpenLabel.style.left = `${(localMarketStart / totalHours) * 100}%`;
             timeBar.appendChild(marketOpenLabel);
 
@@ -108,7 +118,7 @@
 
             const marketCloseLabel = document.createElement('div');
             marketCloseLabel.className = 'label';
-            marketCloseLabel.innerText = `Close: ${formatTime(localMarketEnd)}`;
+            marketCloseLabel.innerText = `Close: ${formatTime24hr(localMarketEnd)}`;
             marketCloseLabel.style.left = `${(localMarketEnd / totalHours) * 100}%`;
             timeBar.appendChild(marketCloseLabel);
 
@@ -119,16 +129,10 @@
             currentTimeMarker.style.left = `${(currentHour / totalHours) * 100}%`;
             timeBar.appendChild(currentTimeMarker);
 
-            const currentTimeLabel = document.createElement('div');
-            currentTimeLabel.className = 'label';
-            currentTimeLabel.id = 'current-time-label';
-            currentTimeLabel.innerText = `Now: ${formatTime(currentHour)}`;
-            currentTimeLabel.style.left = `${(currentHour / totalHours) * 100}%`;
-            timeBar.appendChild(currentTimeLabel);
-
             // Update the displayed time and market hours
-            localTimeDisplay.textContent = `Your Local Time: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: true })}`;
-            marketHoursDisplay.textContent = `New York Market Hours in Your Local Time: ${formatTime(localMarketStart)} - ${formatTime(localMarketEnd)}`;
+            localTimeDisplay.textContent = `Your Local Time: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}`;
+            marketHoursDisplay.textContent = `New York Market Hours in Your Local Time: ${formatTime24hr(localMarketStart)} - ${formatTime24hr(localMarketEnd)}`;
+            currentTimeLabel.textContent = `Your Local Time: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`;
         }
 
         // Update the time bar every second
