@@ -37,10 +37,10 @@
             top: -25px; /* Extend above and below the bar */
         }
 
-        /* Label for the Market */
+        /* Label for the Market (Below Bar) */
         .market-label {
             position: absolute;
-            top: -40px;
+            top: 60px; /* Move below the bar */
             font-size: 16px;
             font-weight: bold;
             transform: translateX(-50%);
@@ -81,8 +81,4 @@
         verticalLines[1].style.left = (endHour / totalHours) * 100 + '%'; // End line
 
         // Center the label dynamically
-        marketLabel.style.left = ((startHour + (endHour - startHour) / 2) / totalHours) * 100 + '%';
-    </script>
-</body>
-</html>
-
+        marketLabel.style.left = ((startHour + (endHour - startHour
