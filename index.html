@@ -3,14 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Time Bar with Local and New York Market Times</title>
+    <title>New York Market Hours</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             text-align: center;
             margin: 20px;
         }
-
         .bar-container {
             position: relative;
             width: 100%;
@@ -20,36 +19,27 @@
             margin: 20px auto;
             border: 1px solid black;
         }
-
         .time-bar-marker {
             position: absolute;
             height: 100%;
             width: 2px;
         }
-
         .current-time {
             background-color: red;
         }
-
         .market-time {
             background-color: green;
         }
-
         .label {
             position: absolute;
             top: -25px;
             transform: translateX(-50%);
             font-size: 12px;
         }
-
         #current-time-label {
             color: red;
             font-weight: bold;
             top: 55px;
-        }
-
-        .current-time-container {
-            margin-top: 10px;
         }
     </style>
 </head>
@@ -82,31 +72,30 @@
             return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
         }
 
-        function updateTimeBar() {
+        // Function to convert New York market hours to local time
+        function convertMarketHoursToLocal() {
             const now = new Date();
 
-            // Get local timezone offset and New York timezone offset
-            const localOffset = now.getTimezoneOffset() / 60; // Offset from UTC
-            const nyOffset = -5; // Standard New York offset from UTC
+            // Get local time zone offset in hours
+            const localOffset = now.getTimezoneOffset() / 60;
+
+            // New York time zone offsets: UTC-5 for EST, UTC-4 for EDT
+            const nyOffset = -5; // Base offset for EST (without daylight saving)
             const nyIsDST = new Date().toLocaleString("en-US", { timeZone: "America/New_York", timeZoneName: "short" }).includes("EDT");
             const nyCurrentOffset = nyOffset + (nyIsDST ? 1 : 0); // Adjust for daylight savings
 
-            // Calculate New York market hours in local time (based on your current time zone)
+            // Calculate New York market open and close in local time
             const localMarketStart = nyMarketStart + nyCurrentOffset - localOffset;
             const localMarketEnd = nyMarketEnd + nyCurrentOffset - localOffset;
 
             // Adjust for crossing midnight (if applicable)
-            if (localMarketStart >= 24) {
-                localMarketStart -= 24;
-            }
-            if (localMarketEnd >= 24) {
-                localMarketEnd -= 24;
-            }
+            if (localMarketStart >= 24) localMarketStart -= 24;
+            if (localMarketEnd >= 24) localMarketEnd -= 24;
 
-            // Clear previous markers
-            timeBar.innerHTML = '';
+            // Update the time bar markers and labels
+            timeBar.innerHTML = ''; // Clear previous markers
 
-            // Add the market open marker
+            // Add market open marker
             const marketOpenMarker = document.createElement('div');
             marketOpenMarker.className = 'time-bar-marker market-time';
             marketOpenMarker.style.left = `${(localMarketStart / totalHours) * 100}%`;
@@ -118,7 +107,7 @@
             marketOpenLabel.style.left = `${(localMarketStart / totalHours) * 100}%`;
             timeBar.appendChild(marketOpenLabel);
 
-            // Add the market close marker
+            // Add market close marker
             const marketCloseMarker = document.createElement('div');
             marketCloseMarker.className = 'time-bar-marker market-time';
             marketCloseMarker.style.left = `${(localMarketEnd / totalHours) * 100}%`;
@@ -130,22 +119,22 @@
             marketCloseLabel.style.left = `${(localMarketEnd / totalHours) * 100}%`;
             timeBar.appendChild(marketCloseLabel);
 
-            // Add the current time marker
+            // Add current time marker
             const currentHour = now.getHours() + now.getMinutes() / 60;
             const currentTimeMarker = document.createElement('div');
             currentTimeMarker.className = 'time-bar-marker current-time';
             currentTimeMarker.style.left = `${(currentHour / totalHours) * 100}%`;
             timeBar.appendChild(currentTimeMarker);
 
-            // Update the displayed time and market hours
+            // Update displayed times
             localTimeDisplay.textContent = `Your Local Time: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false })}`;
             marketHoursDisplay.textContent = `New York Market Hours in Your Local Time: ${formatTime24hr(localMarketStart)} - ${formatTime24hr(localMarketEnd)}`;
             currentTimeLabel.textContent = `Your Local Time: ${now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false })}`;
         }
 
         // Update the time bar every second
-        updateTimeBar();
-        setInterval(updateTimeBar, 1000);
+        convertMarketHoursToLocal();
+        setInterval(convertMarketHoursToLocal, 1000);
     </script>
 </body>
 </html>
