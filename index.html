@@ -37,6 +37,15 @@
             top: -25px; /* Extend above and below the bar */
         }
 
+        /* Current Time Line */
+        .current-time-line {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background-color: red;
+            top: -25px; /* Extend above and below the bar */
+        }
+
         /* Label for the Market (Above the Bar) */
         .market-label {
             position: absolute;
@@ -58,11 +67,58 @@
         <div class="vertical-line" style="left: 25%;"></div>
         <!-- Vertical Line at End -->
         <div class="vertical-line" style="left: 75%;"></div>
+        <!-- Current Time Line -->
+        <div class="current-time-line" style="left: 0%;"></div>
         <!-- Market Label -->
         <div class="market-label" style="left: 50%;">
             New York<br>
             Open: 9:30 AM | Close: 4:00 PM
         </div>
     </div>
+    <p id="local-time"></p>
+
+    <script>
+        // Total hours in a day
+        const totalHours = 24;
+
+        // New York market hours (in New York local time)
+        const nyStartHour = 9.5; // 9:30 AM
+        const nyEndHour = 16; // 4:00 PM
+
+        // Adjust New York market hours to the user's local time
+        const nyTimezoneOffset = -5 * 60; // New York (EST) is UTC-5
+        const localTimezoneOffset = new Date().getTimezoneOffset();
+        const timezoneDifference = (localTimezoneOffset - nyTimezoneOffset) / 60;
+
+        const localStartHour = (nyStartHour + timezoneDifference + totalHours) % totalHours;
+        const localEndHour = (nyEndHour + timezoneDifference + totalHours) % totalHours;
+
+        // Elements
+        const barContainer = document.querySelector('.bar-container');
+        const marketBar = document.querySelector('.market-bar');
+        const verticalLines = document.querySelectorAll('.vertical-line');
+        const currentTimeLine = document.querySelector('.current-time-line');
+        const localTimeDisplay = document.getElementById('local-time');
+
+        // Adjust market bar and vertical lines
+        marketBar.style.left = (localStartHour / totalHours) * 100 + '%';
+        marketBar.style.width = ((localEndHour - localStartHour) / totalHours) * 100 + '%';
+        verticalLines[0].style.left = (localStartHour / totalHours) * 100 + '%';
+        verticalLines[1].style.left = (localEndHour / totalHours) * 100 + '%';
+
+        // Update current time line dynamically
+        function updateCurrentTime() {
+            const now = new Date();
+            const currentHour = now.getHours() + now.getMinutes() / 60; // Current time in decimal hours
+            const currentTimePosition = (currentHour / totalHours) * 100;
+
+            currentTimeLine.style.left = currentTimePosition + '%';
+            localTimeDisplay.textContent = `Your Local Time: ${now.toLocaleTimeString()}`;
+        }
+
+        // Update the current time line every second
+        setInterval(updateCurrentTime, 1000);
+    </script>
 </body>
 </html>
+
