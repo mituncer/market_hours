@@ -56,11 +56,11 @@
     <h1>New York Market Hours</h1>
     <div class="bar-container">
         <!-- Market bar -->
-        <div class="market-bar" style="width: 50%; left: 25%;"></div>
+        <div class="market-bar"></div>
         <!-- Vertical line at market open -->
-        <div class="vertical-line" style="left: 25%;"></div>
+        <div class="vertical-line" style="left: 0%;"></div>
         <!-- Vertical line at market close -->
-        <div class="vertical-line" style="left: 75%;"></div>
+        <div class="vertical-line" style="left: 100%;"></div>
         <!-- Current time line -->
         <div class="current-time-line" style="left: 0%;"></div>
         <!-- Market label -->
@@ -72,8 +72,8 @@
         const totalHours = 24; // Total hours in a day
 
         // New York market hours in New York local time
-        const nyMarketStartHour = 9.5; // 9:30 AM
-        const nyMarketEndHour = 16; // 4:00 PM
+        const nyMarketStartHour = 9.5; // 9:30 AM (decimal format)
+        const nyMarketEndHour = 16; // 4:00 PM (decimal format)
 
         const barContainer = document.querySelector('.bar-container');
         const marketBar = document.querySelector('.market-bar');
@@ -92,14 +92,14 @@
             const now = new Date();
 
             // Get local time zone offset in hours
-            const localOffset = now.getTimezoneOffset() / 60;
-            const nyOffset = -5; // New York offset (standard time)
+            const localOffset = now.getTimezoneOffset() / 60; // Local offset from UTC
+            const nyOffset = -5; // New York offset from UTC (standard time)
 
             // Adjust for daylight saving time in New York
             const nyIsDST = new Date().toLocaleString("en-US", { timeZone: "America/New_York", timeZoneName: "short" }).includes("EDT");
             const nyCurrentOffset = nyOffset + (nyIsDST ? 1 : 0);
 
-            // Calculate market hours in local time
+            // Calculate New York market hours in local time
             const localStartHour = nyMarketStartHour + nyCurrentOffset - localOffset;
             const localEndHour = nyMarketEndHour + nyCurrentOffset - localOffset;
 
