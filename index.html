@@ -28,17 +28,36 @@
             background-color: green;
         }
 
-        /* Labels */
-        .label {
-            margin-top: 10px;
+        /* Vertical Lines */
+        .vertical-line {
+            position: absolute;
+            width: 2px;
+            height: 100px;
+            background-color: black;
+            top: -25px; /* Extend above and below the bar */
+        }
+
+        /* Label for the Market */
+        .market-label {
+            position: absolute;
+            top: -40px;
+            font-size: 16px;
             font-weight: bold;
+            transform: translateX(-50%);
         }
     </style>
 </head>
 <body>
     <h1>New York Market Hours</h1>
     <div class="bar-container">
+        <!-- New York Market Hours -->
         <div class="market-bar" style="width: 50%; left: 25%;"></div>
+        <!-- Vertical Line at Start -->
+        <div class="vertical-line" style="left: 25%;"></div>
+        <!-- Vertical Line at End -->
+        <div class="vertical-line" style="left: 75%;"></div>
+        <!-- Market Label -->
+        <div class="market-label" style="left: 50%;">New York</div>
     </div>
     <div class="label">Market Open: 9:30 AM | Market Close: 4:00 PM</div>
 
@@ -50,10 +69,20 @@
 
         const barContainer = document.querySelector('.bar-container');
         const marketBar = document.querySelector('.market-bar');
+        const verticalLines = document.querySelectorAll('.vertical-line');
+        const marketLabel = document.querySelector('.market-label');
 
-        // Adjust the bar dynamically (optional)
+        // Adjust the market bar dynamically
         marketBar.style.left = (startHour / totalHours) * 100 + '%';
         marketBar.style.width = ((endHour - startHour) / totalHours) * 100 + '%';
+
+        // Adjust the vertical lines dynamically
+        verticalLines[0].style.left = (startHour / totalHours) * 100 + '%'; // Start line
+        verticalLines[1].style.left = (endHour / totalHours) * 100 + '%'; // End line
+
+        // Center the label dynamically
+        marketLabel.style.left = ((startHour + (endHour - startHour) / 2) / totalHours) * 100 + '%';
     </script>
 </body>
 </html>
+
