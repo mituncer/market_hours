@@ -37,13 +37,15 @@
             top: -25px; /* Extend above and below the bar */
         }
 
-        /* Label for the Market (Below Bar) */
+        /* Label for the Market (Above the Bar) */
         .market-label {
             position: absolute;
-            top: 60px; /* Move below the bar */
+            top: -40px; /* Place above the bar */
             font-size: 16px;
             font-weight: bold;
             transform: translateX(-50%);
+            line-height: 1.5;
+            text-align: center;
         }
     </style>
 </head>
@@ -57,28 +59,10 @@
         <!-- Vertical Line at End -->
         <div class="vertical-line" style="left: 75%;"></div>
         <!-- Market Label -->
-        <div class="market-label" style="left: 50%;">New York</div>
+        <div class="market-label" style="left: 50%;">
+            New York<br>
+            Open: 9:30 AM | Close: 4:00 PM
+        </div>
     </div>
-    <div class="label">Market Open: 9:30 AM | Market Close: 4:00 PM</div>
-
-    <script>
-        // Example: Dynamic bar placement based on hours
-        const totalHours = 24;
-        const startHour = 9.5; // 9:30 AM
-        const endHour = 16; // 4:00 PM
-
-        const barContainer = document.querySelector('.bar-container');
-        const marketBar = document.querySelector('.market-bar');
-        const verticalLines = document.querySelectorAll('.vertical-line');
-        const marketLabel = document.querySelector('.market-label');
-
-        // Adjust the market bar dynamically
-        marketBar.style.left = (startHour / totalHours) * 100 + '%';
-        marketBar.style.width = ((endHour - startHour) / totalHours) * 100 + '%';
-
-        // Adjust the vertical lines dynamically
-        verticalLines[0].style.left = (startHour / totalHours) * 100 + '%'; // Start line
-        verticalLines[1].style.left = (endHour / totalHours) * 100 + '%'; // End line
-
-        // Center the label dynamically
-        marketLabel.style.left = ((startHour + (endHour - startHour
+</body>
+</html>
