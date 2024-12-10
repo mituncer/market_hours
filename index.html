@@ -49,7 +49,7 @@
         /* Label for the Market (Above the Bar) */
         .market-label {
             position: absolute;
-            top: -40px; /* Place above the bar */
+            top: -60px; /* Place above the bar */
             font-size: 16px;
             font-weight: bold;
             transform: translateX(-50%);
@@ -70,10 +70,7 @@
         <!-- Current Time Line -->
         <div class="current-time-line" style="left: 0%;"></div>
         <!-- Market Label -->
-        <div class="market-label" style="left: 50%;">
-            New York<br>
-            Open: 9:30 AM | Close: 4:00 PM
-        </div>
+        <div class="market-label" id="market-label">Loading...</div>
     </div>
     <p id="local-time"></p>
 
@@ -82,22 +79,33 @@
         const totalHours = 24;
 
         // New York market hours (in New York local time)
-        const nyStartHour = 9.5; // 9:30 AM
-        const nyEndHour = 16; // 4:00 PM
+        const nyStartHour = 9.5; // 9:30 AM (9.5 in decimal)
+        const nyEndHour = 16; // 4:00 PM (16 in decimal)
 
         // Adjust New York market hours to the user's local time
         const nyTimezoneOffset = -5 * 60; // New York (EST) is UTC-5
-        const localTimezoneOffset = new Date().getTimezoneOffset();
-        const timezoneDifference = (localTimezoneOffset - nyTimezoneOffset) / 60;
+        const localTimezoneOffset = new Date().getTimezoneOffset(); // User's local timezone in minutes
+        const timezoneDifference = (localTimezoneOffset - nyTimezoneOffset) / 60; // Difference in hours
 
+        // Calculate local start and end hours
         const localStartHour = (nyStartHour + timezoneDifference + totalHours) % totalHours;
         const localEndHour = (nyEndHour + timezoneDifference + totalHours) % totalHours;
+
+        // Format hours into readable times
+        function formatTime(hour) {
+            const fullHour = Math.floor(hour);
+            const minutes = hour % 1 === 0.5 ? "30" : "00";
+            const ampm = fullHour >= 12 ? "PM" : "AM";
+            const adjustedHour = fullHour % 12 === 0 ? 12 : fullHour % 12;
+            return `${adjustedHour}:${minutes} ${ampm}`;
+        }
 
         // Elements
         const barContainer = document.querySelector('.bar-container');
         const marketBar = document.querySelector('.market-bar');
         const verticalLines = document.querySelectorAll('.vertical-line');
         const currentTimeLine = document.querySelector('.current-time-line');
+        const marketLabel = document.getElementById('market-label');
         const localTimeDisplay = document.getElementById('local-time');
 
         // Adjust market bar and vertical lines
@@ -105,6 +113,12 @@
         marketBar.style.width = ((localEndHour - localStartHour) / totalHours) * 100 + '%';
         verticalLines[0].style.left = (localStartHour / totalHours) * 100 + '%';
         verticalLines[1].style.left = (localEndHour / totalHours) * 100 + '%';
+
+        // Update the market label with local times
+        marketLabel.innerHTML = `
+            New York<br>
+            Open: ${formatTime(localStartHour)} | Close: ${formatTime(localEndHour)}
+        `;
 
         // Update current time line dynamically
         function updateCurrentTime() {
@@ -121,4 +135,3 @@
     </script>
 </body>
 </html>
-
