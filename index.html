@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Hours Visual</title>
+    <style>
+        /* Page Styling */
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+
+        /* Bar Container */
+        .bar-container {
+            width: 600px; /* Total bar length */
+            height: 50px; /* Bar height */
+            background-color: lightgray;
+            margin: 20px auto;
+            position: relative;
+        }
+
+        /* Market Hours Bar */
+        .market-bar {
+            position: absolute;
+            height: 100%;
+            background-color: green;
+        }
+
+        /* Labels */
+        .label {
+            margin-top: 10px;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <h1>New York Market Hours</h1>
+    <div class="bar-container">
+        <div class="market-bar" style="width: 50%; left: 25%;"></div>
+    </div>
+    <div class="label">Market Open: 9:30 AM | Market Close: 4:00 PM</div>
+
+    <script>
+        // Example: Dynamic bar placement based on hours
+        const totalHours = 24;
+        const startHour = 9.5; // 9:30 AM
+        const endHour = 16; // 4:00 PM
+
+        const barContainer = document.querySelector('.bar-container');
+        const marketBar = document.querySelector('.market-bar');
+
+        // Adjust the bar dynamically (optional)
+        marketBar.style.left = (startHour / totalHours) * 100 + '%';
+        marketBar.style.width = ((endHour - startHour) / totalHours) * 100 + '%';
+    </script>
+</body>
+</html>
