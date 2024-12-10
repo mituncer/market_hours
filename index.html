@@ -72,7 +72,7 @@
         const currentTimeLabel = document.getElementById('current-time-label');
 
         const totalHours = 24; // Total hours in a day
-        const nyMarketStart = 9.5; // New York market starts at 9:30 AM
+        const nyMarketStart = 9.5; // New York market starts at 9:30 AM (9.5 hours)
         const nyMarketEnd = 16; // New York market ends at 4:00 PM
 
         // Helper function to format time in 24-hour format
@@ -91,9 +91,17 @@
             const nyIsDST = new Date().toLocaleString("en-US", { timeZone: "America/New_York", timeZoneName: "short" }).includes("EDT");
             const nyCurrentOffset = nyOffset + (nyIsDST ? 1 : 0); // Adjust for daylight savings
 
-            // Calculate New York market hours in local time
+            // Calculate New York market hours in local time (based on your current time zone)
             const localMarketStart = nyMarketStart + nyCurrentOffset - localOffset;
             const localMarketEnd = nyMarketEnd + nyCurrentOffset - localOffset;
+
+            // Adjust for crossing midnight (if applicable)
+            if (localMarketStart >= 24) {
+                localMarketStart -= 24;
+            }
+            if (localMarketEnd >= 24) {
+                localMarketEnd -= 24;
+            }
 
             // Clear previous markers
             timeBar.innerHTML = '';
