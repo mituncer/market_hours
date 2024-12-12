@@ -76,31 +76,31 @@
 </head>
 <body>
     <h1>Market Hours</h1>
-    <div class="frame">
-        <p id="local-time">Detecting your local time...</p>
+<div class="frame">
+    <p id="local-time">Detecting your local time...</p>
 
-        <div class="time-bar" id="time-bar">
-            <div class="highlight" id="market-highlight"></div>
-            <div class="line local-time" id="local-time-line"></div>
-            <div class="label" id="local-time-label"></div>
-            <div class="line market-time" id="market-open-line"></div>
-            <div class="label" id="market-open-label">New York Opens</div>
-            <div class="time-label" id="market-open-time"></div>
-            <div class="line market-time" id="market-close-line"></div>
-            <div class="label" id="market-close-label">New York Closes</div>
-            <div class="time-label" id="market-close-time"></div>
-        </div>
-
-        <div class="time-bar" id="bist-time-bar">
-            <div class="highlight" id="bist-highlight"></div>
-            <div class="line market-time" id="bist-open-line"></div>
-            <div class="label" id="bist-open-label">BIST Opens</div>
-            <div class="time-label" id="bist-open-time"></div>
-            <div class="line market-time" id="bist-close-line"></div>
-            <div class="label" id="bist-close-label">BIST Closes</div>
-            <div class="time-label" id="bist-close-time"></div>
-        </div>
+    <div class="time-bar" id="time-bar">
+        <div class="highlight" id="market-highlight"></div>
+        <div class="line local-time" id="local-time-line"></div>
+        <div class="label" id="local-time-label"></div>
+        <div class="line market-time" id="market-open-line"></div>
+        <div class="label" id="market-open-label">New York Opens</div>
+        <div class="time-label" id="market-open-time"></div>
+        <div class="line market-time" id="market-close-line"></div>
+        <div class="label" id="market-close-label">New York Closes</div>
+        <div class="time-label" id="market-close-time"></div>
     </div>
+
+    <div class="time-bar" id="bist-time-bar">
+        <div class="highlight" id="bist-highlight"></div>
+        <div class="line market-time" id="bist-open-line"></div>
+        <div class="label" id="bist-open-label">BIST Opens</div>
+        <div class="time-label" id="bist-open-time"></div>
+        <div class="line market-time" id="bist-close-line"></div>
+        <div class="label" id="bist-close-label">BIST Closes</div>
+        <div class="time-label" id="bist-close-time"></div>
+    </div>
+</div>
     <script>
         function displayLocalTime() {
             const now = new Date();
