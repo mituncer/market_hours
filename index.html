@@ -22,7 +22,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             text-align: left;
             width: 75%;
-            height: 250px;
+            height: 300px;
             margin: 0 auto;
         }
         p {
@@ -77,8 +77,16 @@
             text-align: center;
             width: 100%;
         }
+        .closed-submessage {
+            position: absolute;
+            top: 100px;
+            font-size: 0.9em;
+            color: #ecf0f1;
+            text-align: center;
+            width: 100%;
+        }
         .time-bar + .time-bar {
-            margin-top: 60px;
+            margin-top: 80px;
         }
     </style>
 </head>
@@ -92,23 +100,15 @@
             <div class="line local-time" id="local-time-line"></div>
             <div class="label" id="local-time-label"></div>
             <div class="line market-time" id="market-open-line"></div>
-            <div class="label" id="market-open-label">New York Opens</div>
-            <div class="time-label" id="market-open-time"></div>
-            <div class="line market-time" id="market-close-line"></div>
-            <div class="label" id="market-close-label">New York Closes</div>
-            <div class="time-label" id="market-close-time"></div>
-            <div class="closed-message" id="ny-closed-message">Reopens Next Business Day</div>
+            <div class="label" id="market-open-label">New York Market Closed</div>
+            <div class="closed-submessage" id="ny-closed-message">Reopens Next Business Day</div>
         </div>
 
         <div class="time-bar" id="bist-time-bar">
             <div class="highlight" id="bist-highlight"></div>
             <div class="line market-time" id="bist-open-line"></div>
-            <div class="label" id="bist-open-label">BIST Opens</div>
-            <div class="time-label" id="bist-open-time"></div>
-            <div class="line market-time" id="bist-close-line"></div>
-            <div class="label" id="bist-close-label">BIST Closes</div>
-            <div class="time-label" id="bist-close-time"></div>
-            <div class="closed-message" id="bist-closed-message">Reopens Next Business Day</div>
+            <div class="label" id="bist-open-label">BIST Market Closed</div>
+            <div class="closed-submessage" id="bist-closed-message">Reopens Next Business Day</div>
         </div>
     </div>
     <script>
@@ -147,7 +147,6 @@
 
             if (isWeekendOrHoliday('NY')) {
                 document.getElementById('market-open-label').textContent = 'New York Market Closed';
-                document.getElementById('market-close-label').textContent = '';
                 document.getElementById('ny-closed-message').style.display = 'block';
             } else {
                 document.getElementById('ny-closed-message').style.display = 'none';
@@ -156,7 +155,6 @@
 
             if (isWeekendOrHoliday('BIST')) {
                 document.getElementById('bist-open-label').textContent = 'BIST Market Closed';
-                document.getElementById('bist-close-label').textContent = '';
                 document.getElementById('bist-closed-message').style.display = 'block';
             } else {
                 document.getElementById('bist-closed-message').style.display = 'none';
