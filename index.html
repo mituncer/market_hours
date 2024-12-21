@@ -57,17 +57,23 @@
             position: absolute;
             font-size: 0.9em;
             color: #ecf0f1;
-            top: 35px;
+            top: 40px;
             transform: translateX(-50%);
         }
         .market-time {
             background: red;
         }
         .label {
-            position: relative;
-            font-size: 1em;
+            position: absolute;
+            top: -10px;
+            font-size: 0.9em;
             color: #ecf0f1;
-            margin-top: 10px;
+        }
+        .time-label {
+            position: absolute;
+            top: 50px;
+            font-size: 0.9em;
+            color: #ecf0f1;
         }
         .time-bar + .time-bar {
             margin-top: 40px;
@@ -83,13 +89,13 @@
             <div class="highlight" id="market-highlight"></div>
             <div class="line local-time" id="local-time-line"></div>
             <div class="local-time-label" id="local-time-label">Local Time</div>
-            <div class="label" id="market-open-label">New York Market Closed</div>
+            <div class="label" id="market-open-label">New York Opens</div>
         </div>
 
         <div class="time-bar" id="bist-time-bar">
             <div class="highlight" id="bist-highlight"></div>
             <div class="line market-time" id="bist-open-line"></div>
-            <div class="label" id="bist-open-label">BIST Market Closed</div>
+            <div class="label" id="bist-open-label">BIST Opens</div>
         </div>
     </div>
     <script>
