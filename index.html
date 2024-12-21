@@ -22,7 +22,7 @@
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
             text-align: left;
             width: 75%;
-            height: 300px;
+            height: auto;
             margin: 0 auto;
         }
         p {
@@ -58,35 +58,18 @@
             background: red;
         }
         .label {
-            position: absolute;
-            top: 30px;
-            font-size: 0.9em;
+            position: relative;
+            font-size: 1em;
             color: #ecf0f1;
-        }
-        .time-label {
-            position: absolute;
-            top: 50px;
-            font-size: 0.9em;
-            color: #ecf0f1;
-        }
-        .closed-message {
-            position: absolute;
-            top: 70px;
-            font-size: 0.9em;
-            color: #ecf0f1;
-            text-align: center;
-            width: 100%;
+            margin-top: 10px;
         }
         .closed-submessage {
-            position: absolute;
-            top: 100px;
             font-size: 0.9em;
             color: #ecf0f1;
-            text-align: center;
-            width: 100%;
+            margin-top: 5px;
         }
         .time-bar + .time-bar {
-            margin-top: 80px;
+            margin-top: 40px;
         }
     </style>
 </head>
@@ -98,8 +81,6 @@
         <div class="time-bar" id="time-bar">
             <div class="highlight" id="market-highlight"></div>
             <div class="line local-time" id="local-time-line"></div>
-            <div class="label" id="local-time-label"></div>
-            <div class="line market-time" id="market-open-line"></div>
             <div class="label" id="market-open-label">New York Market Closed</div>
             <div class="closed-submessage" id="ny-closed-message">Reopens Next Business Day</div>
         </div>
@@ -119,7 +100,7 @@
             // Define public holidays for markets (example only, adjust as needed)
             const publicHolidays = {
                 NY: ["2024-01-01", "2024-07-04", "2024-12-25"],
-                BIST: ["2024-04-23", "2024-10-29"]
+                BIST: ["2024-01-01","2024-04-23", "2024-10-29"]
             };
 
             const todayStr = now.toISOString().split("T")[0];
