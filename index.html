@@ -54,6 +54,12 @@
             z-index: 10;
             position: absolute;
         }
+        .local-time-label {
+            position: absolute;
+            font-size: 0.9em;
+            color: #ecf0f1;
+            top: 35px;
+        }
         .market-time {
             background: red;
         }
@@ -76,7 +82,7 @@
         <div class="time-bar" id="time-bar">
             <div class="highlight" id="market-highlight"></div>
             <div class="line local-time" id="local-time-line"></div>
-            <div class="label" id="local-time-label">Local Time</div>
+            <div class="local-time-label" id="local-time-label">Local Time</div>
             <div class="label" id="market-open-label">New York Market Closed</div>
         </div>
 
@@ -117,7 +123,7 @@
                 }
 
                 if (localTimeLabel) {
-                    localTimeLabel.style.left = `${percentage + 1}%`;
+                    localTimeLabel.style.left = `${percentage}%`;
                 }
 
                 const localTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
