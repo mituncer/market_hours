@@ -103,10 +103,21 @@
         }
 
         function displayLocalTime() {
-            const now = new Date();
-            const localTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            document.getElementById('local-time').textContent = `Your local time: ${localTime} (${timeZone})`;
+            try {
+                const now = new Date();
+                const localTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                const localTimeElement = document.getElementById('local-time');
+
+                if (localTimeElement) {
+                    localTimeElement.textContent = `Your local time: ${localTime} (${timeZone})`;
+                    console.log(`Local time displayed: ${localTime} (${timeZone})`);
+                } else {
+                    console.error('Local time element not found in the DOM.');
+                }
+            } catch (error) {
+                console.error('Error displaying local time:', error);
+            }
         }
 
         function displayMarketHours() {
