@@ -52,7 +52,7 @@
         .local-time {
             background: #FFD580;
             z-index: 10;
-            position: relative;
+            position: absolute;
         }
         .market-time {
             background: red;
@@ -76,6 +76,7 @@
         <div class="time-bar" id="time-bar">
             <div class="highlight" id="market-highlight"></div>
             <div class="line local-time" id="local-time-line"></div>
+            <div class="label" id="local-time-label">Local Time</div>
             <div class="label" id="market-open-label">New York Market Closed</div>
         </div>
 
@@ -105,15 +106,26 @@
         function displayLocalTime() {
             try {
                 const now = new Date();
+                const totalMinutes = now.getHours() * 60 + now.getMinutes();
+                const percentage = (totalMinutes / (24 * 60)) * 100;
+
+                const localTimeLine = document.getElementById('local-time-line');
+                const localTimeLabel = document.getElementById('local-time-label');
+
+                if (localTimeLine) {
+                    localTimeLine.style.left = `${percentage}%`;
+                }
+
+                if (localTimeLabel) {
+                    localTimeLabel.style.left = `${percentage + 1}%`;
+                }
+
                 const localTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
                 const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                 const localTimeElement = document.getElementById('local-time');
 
                 if (localTimeElement) {
                     localTimeElement.textContent = `Your local time: ${localTime} (${timeZone})`;
-                    console.log(`Local time displayed: ${localTime} (${timeZone})`);
-                } else {
-                    console.error('Local time element not found in the DOM.');
                 }
             } catch (error) {
                 console.error('Error displaying local time:', error);
@@ -159,14 +171,6 @@
 
             marketHighlight.style.left = `${openPercentage}%`;
             marketHighlight.style.width = `${closePercentage - openPercentage}%`;
-
-            const marketOpenTimeLabel = document.getElementById(openTimeId);
-            marketOpenTimeLabel.style.left = `${openPercentage + 1}%`;
-            marketOpenTimeLabel.textContent = `${openTime.getHours().toString().padStart(2, '0')}:${openTime.getMinutes().toString().padStart(2, '0')}`;
-
-            const marketCloseTimeLabel = document.getElementById(closeTimeId);
-            marketCloseTimeLabel.style.left = `${closePercentage + 1}%`;
-            marketCloseTimeLabel.textContent = `${closeTime.getHours().toString().padStart(2, '0')}:${closeTime.getMinutes().toString().padStart(2, '0')}`;
         }
 
         displayLocalTime();
@@ -174,7 +178,8 @@
 
         // Refresh the site every minute
         setInterval(() => {
-            location.reload(); // Reloads the page every minute
+            displayLocalTime();
+            displayMarketHours();
         }, 60000);
     </script>
 </body>
