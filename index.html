@@ -45,20 +45,20 @@
         }
         .line {
             position: absolute;
-            top: -10px;
-            bottom: -50px;
+            top: 0;
+            bottom: 0;
             width: 2px;
         }
         .local-time {
             background: #FFD580;
             z-index: 10;
-            position: absolute;
         }
         .local-time-label {
             position: absolute;
             font-size: 0.9em;
             color: #ecf0f1;
             top: 35px;
+            transform: translateX(-50%);
         }
         .market-time {
             background: red;
@@ -120,6 +120,7 @@
 
                 if (localTimeLine) {
                     localTimeLine.style.left = `${percentage}%`;
+                    localTimeLine.style.height = '100%';
                 }
 
                 if (localTimeLabel) {
