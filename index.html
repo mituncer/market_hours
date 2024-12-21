@@ -75,6 +75,16 @@
             font-size: 0.9em;
             color: #ecf0f1;
         }
+        .market-closed-label {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.9em;
+            color: #ecf0f1;
+            text-align: center;
+            display: none;
+        }
         .time-bar + .time-bar {
             margin-top: 40px;
         }
@@ -90,12 +100,16 @@
             <div class="line local-time" id="local-time-line"></div>
             <div class="local-time-label" id="local-time-label">Local Time</div>
             <div class="label" id="market-open-label">New York Opens</div>
+            <div class="label" id="market-close-label">New York Closes</div>
+            <div class="market-closed-label" id="ny-closed-label">New York Market Closed</div>
         </div>
 
         <div class="time-bar" id="bist-time-bar">
             <div class="highlight" id="bist-highlight"></div>
             <div class="line market-time" id="bist-open-line"></div>
             <div class="label" id="bist-open-label">BIST Opens</div>
+            <div class="label" id="bist-close-label">BIST Closes</div>
+            <div class="market-closed-label" id="bist-closed-label">BIST Market Closed</div>
         </div>
     </div>
     <script>
@@ -146,44 +160,17 @@
         }
 
         function displayMarketHours() {
-            const nyOpenUTC = new Date();
-            nyOpenUTC.setUTCHours(14, 30, 0, 0);
-            const nyCloseUTC = new Date();
-            nyCloseUTC.setUTCHours(21, 0, 0, 0);
-            const bistOpenUTC = new Date();
-            bistOpenUTC.setUTCHours(7, 30, 0, 0);
-            const bistCloseUTC = new Date();
-            bistCloseUTC.setUTCHours(14, 0, 0, 0);
-
             if (isWeekendOrHoliday('NY')) {
-                document.getElementById('market-open-label').textContent = 'New York Market Closed';
-            } else {
-                updateMarketTimeLines(new Date(nyOpenUTC), new Date(nyCloseUTC), 'market-open-line', 'market-close-line', 'market-highlight', 'market-open-time', 'market-close-time');
+                document.getElementById('market-open-label').style.display = 'none';
+                document.getElementById('market-close-label').style.display = 'none';
+                document.getElementById('ny-closed-label').style.display = 'block';
             }
 
             if (isWeekendOrHoliday('BIST')) {
-                document.getElementById('bist-open-label').textContent = 'BIST Market Closed';
-            } else {
-                updateMarketTimeLines(new Date(bistOpenUTC), new Date(bistCloseUTC), 'bist-open-line', 'bist-close-line', 'bist-highlight', 'bist-open-time', 'bist-close-time');
+                document.getElementById('bist-open-label').style.display = 'none';
+                document.getElementById('bist-close-label').style.display = 'none';
+                document.getElementById('bist-closed-label').style.display = 'block';
             }
-        }
-
-        function updateMarketTimeLines(openTime, closeTime, openLineId, closeLineId, highlightId, openTimeId, closeTimeId) {
-            const openMinutes = openTime.getHours() * 60 + openTime.getMinutes();
-            const closeMinutes = closeTime.getHours() * 60 + closeTime.getMinutes();
-
-            const openPercentage = (openMinutes / (24 * 60)) * 100;
-            const closePercentage = (closeMinutes / (24 * 60)) * 100;
-
-            const marketOpenLine = document.getElementById(openLineId);
-            const marketCloseLine = document.getElementById(closeLineId);
-            const marketHighlight = document.getElementById(highlightId);
-
-            marketOpenLine.style.left = `${openPercentage}%`;
-            marketCloseLine.style.left = `${closePercentage}%`;
-
-            marketHighlight.style.left = `${openPercentage}%`;
-            marketHighlight.style.width = `${closePercentage - openPercentage}%`;
         }
 
         displayLocalTime();
