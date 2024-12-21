@@ -173,17 +173,18 @@
         }
 
         function displayMarketHours() {
-            if (isWeekendOrHoliday('NY')) {
-                document.getElementById('market-open-label').style.display = 'none';
-                document.getElementById('market-close-label').style.display = 'none';
-                document.getElementById('ny-closed-label').style.display = 'block';
-            }
+            const nyClosed = isWeekendOrHoliday('NY');
+            const bistClosed = isWeekendOrHoliday('BIST');
 
-            if (isWeekendOrHoliday('BIST')) {
-                document.getElementById('bist-open-label').style.display = 'none';
-                document.getElementById('bist-close-label').style.display = 'none';
-                document.getElementById('bist-closed-label').style.display = 'block';
-            }
+            // New York Market
+            document.getElementById('market-open-label').style.display = nyClosed ? 'none' : 'block';
+            document.getElementById('market-close-label').style.display = nyClosed ? 'none' : 'block';
+            document.getElementById('ny-closed-label').style.display = nyClosed ? 'block' : 'none';
+
+            // BIST Market
+            document.getElementById('bist-open-label').style.display = bistClosed ? 'none' : 'block';
+            document.getElementById('bist-close-label').style.display = bistClosed ? 'none' : 'block';
+            document.getElementById('bist-closed-label').style.display = bistClosed ? 'block' : 'none';
         }
 
         displayLocalTime();
