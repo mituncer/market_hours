@@ -63,11 +63,6 @@
             color: #ecf0f1;
             margin-top: 10px;
         }
-        .closed-submessage {
-            font-size: 0.9em;
-            color: #ecf0f1;
-            margin-top: 5px;
-        }
         .time-bar + .time-bar {
             margin-top: 40px;
         }
@@ -82,14 +77,12 @@
             <div class="highlight" id="market-highlight"></div>
             <div class="line local-time" id="local-time-line"></div>
             <div class="label" id="market-open-label">New York Market Closed</div>
-            <div class="closed-submessage" id="ny-closed-message">Reopens Next Business Day</div>
         </div>
 
         <div class="time-bar" id="bist-time-bar">
             <div class="highlight" id="bist-highlight"></div>
             <div class="line market-time" id="bist-open-line"></div>
             <div class="label" id="bist-open-label">BIST Market Closed</div>
-            <div class="closed-submessage" id="bist-closed-message">Reopens Next Business Day</div>
         </div>
     </div>
     <script>
@@ -100,7 +93,7 @@
             // Define public holidays for markets (example only, adjust as needed)
             const publicHolidays = {
                 NY: ["2024-01-01", "2024-07-04", "2024-12-25"],
-                BIST: ["2024-01-01","2024-04-23", "2024-10-29"]
+                BIST: ["2024-04-23", "2024-10-29"]
             };
 
             const todayStr = now.toISOString().split("T")[0];
@@ -128,17 +121,13 @@
 
             if (isWeekendOrHoliday('NY')) {
                 document.getElementById('market-open-label').textContent = 'New York Market Closed';
-                document.getElementById('ny-closed-message').style.display = 'block';
             } else {
-                document.getElementById('ny-closed-message').style.display = 'none';
                 updateMarketTimeLines(new Date(nyOpenUTC), new Date(nyCloseUTC), 'market-open-line', 'market-close-line', 'market-highlight', 'market-open-time', 'market-close-time');
             }
 
             if (isWeekendOrHoliday('BIST')) {
                 document.getElementById('bist-open-label').textContent = 'BIST Market Closed';
-                document.getElementById('bist-closed-message').style.display = 'block';
             } else {
-                document.getElementById('bist-closed-message').style.display = 'none';
                 updateMarketTimeLines(new Date(bistOpenUTC), new Date(bistCloseUTC), 'bist-open-line', 'bist-close-line', 'bist-highlight', 'bist-open-time', 'bist-close-time');
             }
         }
