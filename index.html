@@ -57,7 +57,14 @@
             position: absolute;
             font-size: 0.9em;
             color: #ecf0f1;
-            top: 40px;
+            top: 50px;
+            transform: translateX(-50%);
+        }
+        .time-value {
+            position: absolute;
+            font-size: 0.9em;
+            color: #ecf0f1;
+            top: 70px;
             transform: translateX(-50%);
         }
         .market-time {
@@ -99,6 +106,7 @@
             <div class="highlight" id="market-highlight"></div>
             <div class="line local-time" id="local-time-line"></div>
             <div class="local-time-label" id="local-time-label">Local Time</div>
+            <div class="time-value" id="local-time-value"></div>
             <div class="label" id="market-open-label">New York Opens</div>
             <div class="label" id="market-close-label">New York Closes</div>
             <div class="market-closed-label" id="ny-closed-label">New York Market Closed</div>
@@ -137,6 +145,7 @@
 
                 const localTimeLine = document.getElementById('local-time-line');
                 const localTimeLabel = document.getElementById('local-time-label');
+                const localTimeValue = document.getElementById('local-time-value');
 
                 if (localTimeLine) {
                     localTimeLine.style.left = `${percentage}%`;
@@ -147,11 +156,15 @@
                     localTimeLabel.style.left = `${percentage}%`;
                 }
 
-                const localTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                const localTimeElement = document.getElementById('local-time');
+                if (localTimeValue) {
+                    localTimeValue.style.left = `${percentage}%`;
+                    const localTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
+                    localTimeValue.textContent = localTime;
+                }
 
+                const localTimeElement = document.getElementById('local-time');
                 if (localTimeElement) {
+                    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
                     localTimeElement.textContent = `Your local time: ${localTime} (${timeZone})`;
                 }
             } catch (error) {
