@@ -57,14 +57,14 @@
             position: absolute;
             font-size: 0.9em;
             color: #ecf0f1;
-            top: 50px;
+            top: 40px;
             transform: translateX(-50%);
         }
         .time-value {
             position: absolute;
             font-size: 0.9em;
             color: #ecf0f1;
-            top: 70px;
+            top: 60px;
             transform: translateX(-50%);
         }
         .market-time {
@@ -73,12 +73,6 @@
         .label {
             position: absolute;
             top: -10px;
-            font-size: 0.9em;
-            color: #ecf0f1;
-        }
-        .time-label {
-            position: absolute;
-            top: 50px;
             font-size: 0.9em;
             color: #ecf0f1;
         }
@@ -138,37 +132,34 @@
         }
 
         function displayLocalTime() {
-            try {
-                const now = new Date();
-                const totalMinutes = now.getHours() * 60 + now.getMinutes();
-                const percentage = (totalMinutes / (24 * 60)) * 100;
+            const now = new Date();
+            const totalMinutes = now.getHours() * 60 + now.getMinutes();
+            const percentage = (totalMinutes / (24 * 60)) * 100;
 
-                const localTimeLine = document.getElementById('local-time-line');
-                const localTimeLabel = document.getElementById('local-time-label');
-                const localTimeValue = document.getElementById('local-time-value');
+            const localTimeLine = document.getElementById('local-time-line');
+            const localTimeLabel = document.getElementById('local-time-label');
+            const localTimeValue = document.getElementById('local-time-value');
 
-                if (localTimeLine) {
-                    localTimeLine.style.left = `${percentage}%`;
-                    localTimeLine.style.height = '100%';
-                }
+            const localTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
 
-                if (localTimeLabel) {
-                    localTimeLabel.style.left = `${percentage}%`;
-                }
+            if (localTimeLine) {
+                localTimeLine.style.left = `${percentage}%`;
+                localTimeLine.style.height = '100%';
+            }
 
-                if (localTimeValue) {
-                    localTimeValue.style.left = `${percentage}%`;
-                    const localTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
-                    localTimeValue.textContent = localTime;
-                }
+            if (localTimeLabel) {
+                localTimeLabel.style.left = `${percentage}%`;
+            }
 
-                const localTimeElement = document.getElementById('local-time');
-                if (localTimeElement) {
-                    const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-                    localTimeElement.textContent = `Your local time: ${localTime} (${timeZone})`;
-                }
-            } catch (error) {
-                console.error('Error displaying local time:', error);
+            if (localTimeValue) {
+                localTimeValue.style.left = `${percentage}%`;
+                localTimeValue.textContent = localTime;
+            }
+
+            const localTimeElement = document.getElementById('local-time');
+            if (localTimeElement) {
+                const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                localTimeElement.textContent = `Your local time: ${localTime} (${timeZone})`;
             }
         }
 
