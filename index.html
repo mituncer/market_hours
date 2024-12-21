@@ -69,6 +69,14 @@
             font-size: 0.9em;
             color: #ecf0f1;
         }
+        .closed-message {
+            position: absolute;
+            top: 70px;
+            font-size: 0.9em;
+            color: #ecf0f1;
+            text-align: center;
+            width: 100%;
+        }
         .time-bar + .time-bar {
             margin-top: 60px;
         }
@@ -89,6 +97,7 @@
             <div class="line market-time" id="market-close-line"></div>
             <div class="label" id="market-close-label">New York Closes</div>
             <div class="time-label" id="market-close-time"></div>
+            <div class="closed-message" id="ny-closed-message">Reopens Next Business Day</div>
         </div>
 
         <div class="time-bar" id="bist-time-bar">
@@ -99,6 +108,7 @@
             <div class="line market-time" id="bist-close-line"></div>
             <div class="label" id="bist-close-label">BIST Closes</div>
             <div class="time-label" id="bist-close-time"></div>
+            <div class="closed-message" id="bist-closed-message">Reopens Next Business Day</div>
         </div>
     </div>
     <script>
@@ -137,15 +147,19 @@
 
             if (isWeekendOrHoliday('NY')) {
                 document.getElementById('market-open-label').textContent = 'New York Market Closed';
-                document.getElementById('market-close-label').textContent = 'Reopens Next Business Day';
+                document.getElementById('market-close-label').textContent = '';
+                document.getElementById('ny-closed-message').style.display = 'block';
             } else {
+                document.getElementById('ny-closed-message').style.display = 'none';
                 updateMarketTimeLines(new Date(nyOpenUTC), new Date(nyCloseUTC), 'market-open-line', 'market-close-line', 'market-highlight', 'market-open-time', 'market-close-time');
             }
 
             if (isWeekendOrHoliday('BIST')) {
                 document.getElementById('bist-open-label').textContent = 'BIST Market Closed';
-                document.getElementById('bist-close-label').textContent = 'Reopens Next Business Day';
+                document.getElementById('bist-close-label').textContent = '';
+                document.getElementById('bist-closed-message').style.display = 'block';
             } else {
+                document.getElementById('bist-closed-message').style.display = 'none';
                 updateMarketTimeLines(new Date(bistOpenUTC), new Date(bistCloseUTC), 'bist-open-line', 'bist-close-line', 'bist-highlight', 'bist-open-time', 'bist-close-time');
             }
         }
