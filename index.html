@@ -62,91 +62,94 @@
             top: 30px;
             font-size: 0.9em;
             color: #ecf0f1;
+            white-space: nowrap;
         }
         .time-label {
             position: absolute;
             top: 50px;
             font-size: 0.9em;
             color: #ecf0f1;
+            white-space: nowrap;
         }
         .time-bar + .time-bar {
             margin-top: 60px;
         }
-            .hidden {
-        display: none;
+        .hidden {
+            display: none;
+        }
+        .market-closed-label {
+            position: absolute !important;
+            left: 10px !important;
+            top: 7px !important;
+            transform: none !important;
+            color: #FFB347 !important;
+        }
+        .bist-closed-label {
+            position: absolute !important;
+            left: 10px !important;
+            top: 7px !important;
+            transform: none !important;
+            color: #FFB347 !important;
         }
     </style>
 </head>
 <body>
     <h1></h1>
-<div class="frame">
-    <p id="local-time">Detecting your local time...</p>
+    <div class="frame">
+        <p id="local-time">Detecting your local time...</p>
 
-    <div class="time-bar" id="time-bar">
-        <div class="highlight" id="market-highlight"></div>
-        <div class="line local-time" id="local-time-line"></div>
-        <div class="label" id="local-time-label"></div>
-        <div class="line market-time" id="market-open-line"></div>
-        <div class="label" id="market-open-label">New York Opens</div>
-        <div class="time-label" id="market-open-time"></div>
-        <div class="line market-time" id="market-close-line"></div>
-        <div class="label" id="market-close-label">New York Closes</div>
-        <div class="time-label" id="market-close-time"></div>
-    </div>
+        <div class="time-bar" id="time-bar">
+            <div class="highlight" id="market-highlight"></div>
+            <div class="line local-time" id="local-time-line"></div>
+            <div class="label" id="local-time-label"></div>
+            <div class="line market-time" id="market-open-line"></div>
+            <div class="label" id="market-open-label">New York Opens</div>
+            <div class="time-label" id="market-open-time"></div>
+            <div class="line market-time" id="market-close-line"></div>
+            <div class="label" id="market-close-label">New York Closes</div>
+            <div class="time-label" id="market-close-time"></div>
+        </div>
 
-    <div class="time-bar" id="bist-time-bar">
-        <div class="highlight" id="bist-highlight"></div>
-        <div class="line market-time" id="bist-open-line"></div>
-        <div class="label" id="bist-open-label">BIST Opens</div>
-        <div class="time-label" id="bist-open-time"></div>
-        <div class="line market-time" id="bist-close-line"></div>
-        <div class="label" id="bist-close-label">BIST Closes</div>
-        <div class="time-label" id="bist-close-time"></div>
+        <div class="time-bar" id="bist-time-bar">
+            <div class="highlight" id="bist-highlight"></div>
+            <div class="line market-time" id="bist-open-line"></div>
+            <div class="label" id="bist-open-label">BIST Opens</div>
+            <div class="time-label" id="bist-open-time"></div>
+            <div class="line market-time" id="bist-close-line"></div>
+            <div class="label" id="bist-close-label">BIST Closes</div>
+            <div class="time-label" id="bist-close-time"></div>
+        </div>
     </div>
-</div>
     <script>
-        async function fetchHolidays(market) {
-            const predefinedHolidays = {
-                NY: ["2024-01-01", "2024-07-04", "2024-12-25"],
-                BIST: ["2024-04-23", "2024-10-29"]
-            };
-            
-            try {
-                const response = await fetch(`https://holidayapi.com/v1/holidays?country=${market}&year=2024&key=YOUR_API_KEY`);
-                if (!response.ok) throw new Error("Failed to fetch");
-
-                const data = await response.json();
-                return data.holidays.map(holiday => holiday.date);
-            } catch (error) {
-                console.error("Error fetching holidays, using predefined dates.", error);
-                return predefinedHolidays[market];
-            }
-        }
-
-        async function isWorkingDay(market) {
+        function isWorkingDay(market) {
             const now = new Date();
             const day = now.getDay();
-            const holidays = await fetchHolidays(market);
+
+            const publicHolidays = {
+                NY: [ 
+                    "2025-01-01","2025-01-20","2025-02-17","2025-04-18","2025-05-26","2025-06-19","2025-07-04",
+                    "2025-09-01","2025-11-27","2025-12-25","2026-01-01","2026-01-19","2026-02-16","2026-04-03",
+                    "2026-05-25","2026-06-19","2026-07-03","2026-09-07","2026-11-26","2026-12-25"
+                ],
+                BIST: [ 
+                    "2025-04-23","2025-05-01","2025-05-19","2025-07-15","2025-08-30","2025-10-29",
+                    "2026-01-01","2026-04-23","2026-05-01","2026-05-19","2026-07-15","2026-08-30","2026-10-29"
+                ]
+            };
 
             const todayStr = now.toISOString().split("T")[0];
-            const isHoliday = holidays.includes(todayStr);
+            const isHoliday = publicHolidays[market]?.includes(todayStr);
 
-            return !(day === 0 || day === 6 || isHoliday);
+            return day !== 0 && day !== 6 && !isHoliday;
         }
-
+        
         function displayLocalTime() {
             const now = new Date();
             const localTime = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', hour12: false });
             const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            const localTimeElement = document.getElementById('local-time');
-
-            // Clear the previous content to avoid collisions
-            localTimeElement.textContent = `Your local time: ${localTime} (${timeZone})`;
-
+            document.getElementById('local-time').textContent = `Your local time: ${localTime} (${timeZone})`;
             updateLocalTimeLine(now, localTime);
         }
-
-        setInterval(displayLocalTime, 60000); // Update local time every minute
 
         function displayMarketHours() {
             const nyOpenUTC = new Date();
@@ -173,36 +176,121 @@
 
             const localTimeLine = document.getElementById('local-time-line');
             localTimeLine.style.left = `${percentage}%`;
-            localTimeLine.style.height = `180px`;
+            localTimeLine.style.height = '180px';
 
             const localTimeLabel = document.getElementById('local-time-label');
             localTimeLabel.style.left = `${percentage + 1}%`;
             localTimeLabel.style.top = '160px';
-            localTimeLabel.textContent = `Local Time`;
+            localTimeLabel.textContent = 'Local Time';
+
+            const localTimeBelowLabel = document.createElement('div');
+            localTimeBelowLabel.classList.add('time-label');
+            localTimeBelowLabel.style.left = `${percentage + 1}%`;
+            localTimeBelowLabel.textContent = localTime;
+            localTimeBelowLabel.style.top = '180px';
+            localTimeLine.parentNode.appendChild(localTimeBelowLabel);
         }
 
+        function updateMarketTimeLines(openTime, closeTime, openLineId, closeLineId, highlightId, openTimeId, closeTimeId) {
+            const openMinutes = openTime.getHours() * 60 + openTime.getMinutes();
+            const closeMinutes = closeTime.getHours() * 60 + closeTime.getMinutes();
+
+            const openPercentage = (openMinutes / (24 * 60)) * 100;
+            const closePercentage = (closeMinutes / (24 * 60)) * 100;
+
+            const marketOpenLine = document.getElementById(openLineId);
+            const marketCloseLine = document.getElementById(closeLineId);
+            const marketHighlight = document.getElementById(highlightId);
+
+            marketOpenLine.style.left = `${openPercentage}%`;
+            marketCloseLine.style.left = `${closePercentage}%`;
+
+            marketHighlight.style.left = `${openPercentage}%`;
+            marketHighlight.style.width = `${closePercentage - openPercentage}%`;
+
+            const marketOpenLabel = document.getElementById(openLineId.replace('-line', '-label'));
+            const marketCloseLabel = document.getElementById(closeLineId.replace('-line', '-label'));
+
+            marketOpenLabel.style.left = `${openPercentage + 1}%`;
+
+            const marketOpenTimeLabel = document.getElementById(openTimeId);
+            marketOpenTimeLabel.style.left = `${openPercentage + 1}%`;
+            marketOpenTimeLabel.textContent = `${openTime.getHours().toString().padStart(2, '0')}:${openTime.getMinutes().toString().padStart(2, '0')}`;
+
+            marketCloseLabel.style.left = `${closePercentage + 1}%`;
+
+            const marketCloseTimeLabel = document.getElementById(closeTimeId);
+            marketCloseTimeLabel.style.left = `${closePercentage + 1}%`;
+            marketCloseTimeLabel.textContent = `${closeTime.getHours().toString().padStart(2, '0')}:${closeTime.getMinutes().toString().padStart(2, '0')}`;
+        }
+
+        function updateMarketClosedStatus() {
+            // BIST Market Status
+            if (!isWorkingDay("BIST")) {
+                const bistElements = {
+                    lines: ['bist-open-line', 'bist-close-line'],
+                    labels: ['bist-close-label'],
+                    times: ['bist-open-time', 'bist-close-time'],
+                    highlight: 'bist-highlight'
+                };
+
+                // Hide all regular elements
+                [...bistElements.lines, ...bistElements.labels, ...bistElements.times]
+                    .forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) element.style.display = 'none';
+                    });
+
+                // Hide highlight
+                const highlight = document.getElementById(bistElements.highlight);
+                if (highlight) highlight.style.display = 'none';
+
+                // Update open label to show closed status
+                const bistLabel = document.getElementById('bist-open-label');
+                if (bistLabel) {
+                    bistLabel.innerHTML = 'BIST Closed Today';
+                    bistLabel.classList.add('bist-closed-label');
+                }
+            }
+
+            // NY Market Status
+            if (!isWorkingDay("NY")) {
+                const nyElements = {
+                    lines: ['market-open-line', 'market-close-line'],
+                    labels: ['market-close-label'],
+                    times: ['market-open-time', 'market-close-time'],
+                    highlight: 'market-highlight'
+                };
+
+                // Hide all regular elements
+                [...nyElements.lines, ...nyElements.labels, ...nyElements.times]
+                    .forEach(id => {
+                        const element = document.getElementById(id);
+                        if (element) element.style.display = 'none';
+                    });
+
+                // Hide highlight
+                const highlight = document.getElementById(nyElements.highlight);
+                if (highlight) highlight.style.display = 'none';
+
+                // Update open label to show closed status
+                const marketLabel = document.getElementById('market-open-label');
+                if (marketLabel) {
+                    marketLabel.innerHTML = 'NYSE Closed Today';
+                    marketLabel.classList.add('market-closed-label');
+                }
+            }
+        }
+
+        // Initialize display
         displayLocalTime();
+        displayMarketHours();
+        updateMarketClosedStatus();
 
-        isWorkingDay("BIST").then(isWorking => {
-            if (!isWorking) {
-                document.getElementById('bist-close-line').style.display = 'none';
-                document.getElementById('bist-open-line').style.display = 'none';
-                document.getElementById('bist-open-label').innerHTML = 'BIST Market Closed Today';
-                document.getElementById('bist-close-label').style.display = 'none';
-            }
-        });
-
-        isWorkingDay("NY").then(isWorking => {
-            if (!isWorking) {
-                document.getElementById('market-close-line').style.display = 'none';
-                document.getElementById('market-open-line').style.display = 'none';
-                document.getElementById('market-open-label').innerHTML = 'NYSE Closed Today';
-                document.getElementById('market-close-label').style.display = 'none';
-            } else {
-                displayMarketHours();
-            }
-        });
-
+        // Refresh every minute
+        setInterval(() => {
+            location.reload();
+        }, 60000);
     </script>
 </body>
 </html>
