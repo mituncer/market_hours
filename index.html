@@ -41,7 +41,13 @@
             position: absolute;
             top: 0;
             bottom: 0;
-            background: rgba(255, 0, 0, 0.2);
+            background: rgba(46, 204, 113, 0.3);
+        }
+        .highlight-next-day {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            background: rgba(46, 204, 113, 0.3);
         }
         .line {
             position: absolute;
@@ -55,7 +61,7 @@
             position: relative;
         }
         .market-time {
-            background: red;
+            background: #2ecc71;
         }
         .label {
             position: absolute;
@@ -74,17 +80,12 @@
         .time-bar + .time-bar {
             margin-top: 60px;
         }
-        .hidden {
-            display: none;
+        .next-day-indicator {
+            color: #f1c40f;
+            font-size: 0.8em;
+            margin-left: 5px;
         }
-        .market-closed-label {
-            position: absolute !important;
-            left: 10px !important;
-            top: 7px !important;
-            transform: none !important;
-            color: #FFB347 !important;
-        }
-        .bist-closed-label {
+        .market-closed-label, .bist-closed-label {
             position: absolute !important;
             left: 10px !important;
             top: 7px !important;
@@ -100,6 +101,7 @@
 
         <div class="time-bar" id="time-bar">
             <div class="highlight" id="market-highlight"></div>
+            <div class="highlight-next-day" id="market-highlight-next"></div>
             <div class="line local-time" id="local-time-line"></div>
             <div class="label" id="local-time-label"></div>
             <div class="line market-time" id="market-open-line"></div>
@@ -112,6 +114,7 @@
 
         <div class="time-bar" id="bist-time-bar">
             <div class="highlight" id="bist-highlight"></div>
+            <div class="highlight-next-day" id="bist-highlight-next"></div>
             <div class="line market-time" id="bist-open-line"></div>
             <div class="label" id="bist-open-label">BIST Opens</div>
             <div class="time-label" id="bist-open-time"></div>
@@ -166,8 +169,8 @@
             const localBISTOpen = new Date(bistOpenUTC.toLocaleString('en-US', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
             const localBISTClose = new Date(bistCloseUTC.toLocaleString('en-US', { timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone }));
 
-            updateMarketTimeLines(localNYOpen, localNYClose, 'market-open-line', 'market-close-line', 'market-highlight', 'market-open-time', 'market-close-time');
-            updateMarketTimeLines(localBISTOpen, localBISTClose, 'bist-open-line', 'bist-close-line', 'bist-highlight', 'bist-open-time', 'bist-close-time');
+            updateMarketTimeLines(localNYOpen, localNYClose, 'market', 'New York');
+            updateMarketTimeLines(localBISTOpen, localBISTClose, 'bist', 'BIST');
         }
 
         function updateLocalTimeLine(now, localTime) {
@@ -191,37 +194,61 @@
             localTimeLine.parentNode.appendChild(localTimeBelowLabel);
         }
 
-        function updateMarketTimeLines(openTime, closeTime, openLineId, closeLineId, highlightId, openTimeId, closeTimeId) {
+        function updateMarketTimeLines(openTime, closeTime, prefix, marketName) {
             const openMinutes = openTime.getHours() * 60 + openTime.getMinutes();
             const closeMinutes = closeTime.getHours() * 60 + closeTime.getMinutes();
-
+            
             const openPercentage = (openMinutes / (24 * 60)) * 100;
             const closePercentage = (closeMinutes / (24 * 60)) * 100;
 
-            const marketOpenLine = document.getElementById(openLineId);
-            const marketCloseLine = document.getElementById(closeLineId);
-            const marketHighlight = document.getElementById(highlightId);
+            const isCrossDay = closeMinutes < openMinutes;
+            
+            // Update lines and labels
+            const openLine = document.getElementById(`${prefix}-open-line`);
+            const closeLine = document.getElementById(`${prefix}-close-line`);
+            const highlight = document.getElementById(`${prefix}-highlight`);
+            const highlightNext = document.getElementById(`${prefix}-highlight-next`);
 
-            marketOpenLine.style.left = `${openPercentage}%`;
-            marketCloseLine.style.left = `${closePercentage}%`;
+            openLine.style.left = `${openPercentage}%`;
+            closeLine.style.left = `${closePercentage}%`;
 
-            marketHighlight.style.left = `${openPercentage}%`;
-            marketHighlight.style.width = `${closePercentage - openPercentage}%`;
+            if (isCrossDay) {
+                // First day highlight (from open to end of day)
+                highlight.style.left = `${openPercentage}%`;
+                highlight.style.width = `${100 - openPercentage}%`;
+                
+                // Next day highlight (from start of day to close)
+                highlightNext.style.left = '0%';
+                highlightNext.style.width = `${closePercentage}%`;
+                highlightNext.style.display = 'block';
 
-            const marketOpenLabel = document.getElementById(openLineId.replace('-line', '-label'));
-            const marketCloseLabel = document.getElementById(closeLineId.replace('-line', '-label'));
+                // Update close label to indicate next day
+                const closeLabel = document.getElementById(`${prefix}-close-label`);
+                if (!closeLabel.textContent.includes('(Next Day)')) {
+                    closeLabel.textContent = `${marketName} Closes (Next Day)`;
+                }
+            } else {
+                highlight.style.left = `${openPercentage}%`;
+                highlight.style.width = `${closePercentage - openPercentage}%`;
+                highlightNext.style.display = 'none';
+            }
 
-            marketOpenLabel.style.left = `${openPercentage + 1}%`;
+            // Update time labels
+            const openTimeLabel = document.getElementById(`${prefix}-open-time`);
+            const closeTimeLabel = document.getElementById(`${prefix}-close-time`);
+            
+            openTimeLabel.style.left = `${openPercentage + 1}%`;
+            openTimeLabel.textContent = `${openTime.getHours().toString().padStart(2, '0')}:${openTime.getMinutes().toString().padStart(2, '0')}`;
+            
+            closeTimeLabel.style.left = `${closePercentage + 1}%`;
+            closeTimeLabel.textContent = `${closeTime.getHours().toString().padStart(2, '0')}:${closeTime.getMinutes().toString().padStart(2, '0')}`;
 
-            const marketOpenTimeLabel = document.getElementById(openTimeId);
-            marketOpenTimeLabel.style.left = `${openPercentage + 1}%`;
-            marketOpenTimeLabel.textContent = `${openTime.getHours().toString().padStart(2, '0')}:${openTime.getMinutes().toString().padStart(2, '0')}`;
-
-            marketCloseLabel.style.left = `${closePercentage + 1}%`;
-
-            const marketCloseTimeLabel = document.getElementById(closeTimeId);
-            marketCloseTimeLabel.style.left = `${closePercentage + 1}%`;
-            marketCloseTimeLabel.textContent = `${closeTime.getHours().toString().padStart(2, '0')}:${closeTime.getMinutes().toString().padStart(2, '0')}`;
+            // Position labels
+            const openLabel = document.getElementById(`${prefix}-open-label`);
+            const closeLabel = document.getElementById(`${prefix}-close-label`);
+            
+            openLabel.style.left = `${openPercentage + 1}%`;
+            closeLabel.style.left = `${closePercentage + 1}%`;
         }
 
         function updateMarketClosedStatus() {
@@ -231,21 +258,15 @@
                     lines: ['bist-open-line', 'bist-close-line'],
                     labels: ['bist-close-label'],
                     times: ['bist-open-time', 'bist-close-time'],
-                    highlight: 'bist-highlight'
+                    highlights: ['bist-highlight', 'bist-highlight-next']
                 };
 
-                // Hide all regular elements
-                [...bistElements.lines, ...bistElements.labels, ...bistElements.times]
+                [...bistElements.lines, ...bistElements.labels, ...bistElements.times, ...bistElements.highlights]
                     .forEach(id => {
                         const element = document.getElementById(id);
                         if (element) element.style.display = 'none';
                     });
 
-                // Hide highlight
-                const highlight = document.getElementById(bistElements.highlight);
-                if (highlight) highlight.style.display = 'none';
-
-                // Update open label to show closed status
                 const bistLabel = document.getElementById('bist-open-label');
                 if (bistLabel) {
                     bistLabel.innerHTML = 'BIST Closed Today';
@@ -259,21 +280,15 @@
                     lines: ['market-open-line', 'market-close-line'],
                     labels: ['market-close-label'],
                     times: ['market-open-time', 'market-close-time'],
-                    highlight: 'market-highlight'
+                    highlights: ['market-highlight', 'market-highlight-next']
                 };
 
-                // Hide all regular elements
-                [...nyElements.lines, ...nyElements.labels, ...nyElements.times]
+                [...nyElements.lines, ...nyElements.labels, ...nyElements.times, ...nyElements.highlights]
                     .forEach(id => {
                         const element = document.getElementById(id);
                         if (element) element.style.display = 'none';
                     });
 
-                // Hide highlight
-                const highlight = document.getElementById(nyElements.highlight);
-                if (highlight) highlight.style.display = 'none';
-
-                // Update open label to show closed status
                 const marketLabel = document.getElementById('market-open-label');
                 if (marketLabel) {
                     marketLabel.innerHTML = 'NYSE Closed Today';
